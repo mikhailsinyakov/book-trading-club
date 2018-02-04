@@ -1,50 +1,30 @@
 'use strict';
 
-const GitHubStrategy = require('passport-github').Strategy;
 const User = require('../models/users');
-const configAuth = require('./auth');
+const LocalStrategy = require('passport-local');
 
 module.exports = passport => {
 	passport.serializeUser((user, done) => {
-		done(null, user.id);
+		done(null, user.email);
 	});
 
-	passport.deserializeUser((id, done) => {
-		User.findById(id, (err, user) => {
+	passport.deserializeUser((email, done) => {
+		User.findOne({email}, (err, user) => {
 			done(err, user);
 		});
 	});
 
-	passport.use(new GitHubStrategy({
-		clientID: configAuth.githubAuth.clientID,
-		clientSecret: configAuth.githubAuth.clientSecret,
-		callbackURL: configAuth.githubAuth.callbackURL
-	},
-	(token, refreshToken, profile, done) => {
+	passport.use(new LocalStrategy({usernameField: 'email'},
+									(email, password, done) => {
 		process.nextTick(() => {
-			User.findOne({ 'github.id': profile.id }, (err, user) => {
+			User.findOne({email}, (err, user) => {
 				if (err) {
 					return done(err);
 				}
-
-				if (user) {
-					return done(null, user);
-				} else {
-					var newUser = new User();
-
-					newUser.github.id = profile.id;
-					newUser.github.username = profile.username;
-					newUser.github.displayName = profile.displayName;
-					newUser.github.publicRepos = profile._json.public_repos;
-
-					newUser.save(err => {
-						if (err) {
-							throw err;
-						}
-
-						return done(null, newUser);
-					});
+				if (!user || !user.verifyPassword(password)) {
+					return done(null, false);
 				}
+				return done(null, user);
 			});
 		});
 	}));

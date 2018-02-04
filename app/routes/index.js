@@ -13,8 +13,13 @@ module.exports = (app, passport) => {
 	}
 
 	app.route('/')
-		.get(isLoggedIn, (req, res) => {
+		.get((req, res) => {
 			res.sendFile(path + '/public/index.html');
+		});
+		
+	app.route('/signup')
+		.get((req, res) => {
+			res.sendFile(path + '/public/signup.html');
 		});
 
 	app.route('/login')
@@ -25,25 +30,17 @@ module.exports = (app, passport) => {
 	app.route('/logout')
 		.get((req, res) => {
 			req.logout();
-			res.redirect('/login');
+			res.redirect('/');
 		});
 
-	app.route('/profile')
+	app.route('/settings')
 		.get(isLoggedIn, (req, res) => {
-			res.sendFile(path + '/public/profile.html');
+			res.sendFile(path + '/public/settings.html');
 		});
 
 	app.route('/api/:id')
 		.get(isLoggedIn, (req, res) => {
-			res.json(req.user.github);
+			res.json(req.user);
 		});
 
-	app.route('/auth/github')
-		.get(passport.authenticate('github'));
-
-	app.route('/auth/github/callback')
-		.get(passport.authenticate('github', {
-			successRedirect: '/',
-			failureRedirect: '/login'
-		}));
 };

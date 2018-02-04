@@ -1,17 +1,14 @@
 {
-  "name": "nightlife_coordination",
+  "name": "book-trading-club",
   "version": "1.0.1",
-  "description": "App for searching bars in your area",
+  "description": "App for viewing all books posted by every user",
   "main": "server.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mikhailsinyakov/nightlife_coordination"
+    "url": "https://github.com/mikhailsinyakov/book-trading-club"
   },
-  "homepage": "https://nightlife-coordination-mikhailsinyakov.c9users.io",
   "keywords": [
-    "nightlife",
-    "bars",
-    "search"
+    "books"
   ],
   "scripts": {
     "start": "node server.js"
@@ -25,6 +22,6 @@
     "mongoose": "^4.1.0",
     "nodemon": "^1.14.11",
     "passport": "^0.3.0",
-    "passport-github": "^1.0.0"
+    "passport-local": "^1.0.0"
   }
 }

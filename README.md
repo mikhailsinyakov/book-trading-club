@@ -1,12 +1,12 @@
-# Nightlife coordination app
+# Book trading club
 
-You can view all bars in your area
+You can view all books posted by every user.
 
-As an authenticated user you can: 
-    - add yourself to a bar to indicate you are going there tonight
-    - remove yourself from a bar if you no longer want to go there
-    
-When you login you should not have to search again
+You can add a new book.
+
+You can update your settings to store your full name, city, and country, change your password.
+
+You can propose a trade and wait for the other user to accept the trade.
 
 
 Created by using [Clementine.js](https://github.com/johnstonbl01/clementinejs-fcc.git) boilerplate 
