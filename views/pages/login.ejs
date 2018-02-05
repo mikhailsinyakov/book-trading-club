@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<% include ../partials/head  %>
+	</head>
+	<body>
+		<header>
+			<% include ../partials/header %>
+		</header>
+		
+		<main>
+			<% if (message) { %>
+				<p><%= message %></p>
+			<% } %>
+			<form id="login" action="/login" method="post">
+				<label>
+					Email:
+					<input type="email" name="email" autocomplete="email" required/>
+				</label></br>
+				<label>
+					Password:
+					<input type="password" name="password" autocomplete="current-password" required/>
+				</label></br>
+				<button type="submit">Log in</button>
+			</form>
+			
+		</main>
+		
+		<script type="text/javascript" src="common/ajax-functions.js"></script>
+		<script type="text/javascript" src="common/formController.js"></script>
+	</body>
+</html>

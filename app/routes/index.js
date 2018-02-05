@@ -1,6 +1,9 @@
 'use strict';
 
 const path = process.cwd();
+const UserHandler = require('../controllers/userHandler.server');
+
+const userHandler = new UserHandler();
 
 module.exports = (app, passport) => {
 
@@ -14,18 +17,30 @@ module.exports = (app, passport) => {
 
 	app.route('/')
 		.get((req, res) => {
-			res.sendFile(path + '/public/index.html');
+			res.render('pages/index', {user: req.user});
 		});
 		
 	app.route('/signup')
 		.get((req, res) => {
-			res.sendFile(path + '/public/signup.html');
-		});
+			req.logout();
+			res.render('pages/signup', {message: req.flash('signupMessage')});
+		})
+		.post(passport.authenticate('local-signup', {
+			successRedirect: '/',
+			failureRedirect: '/signup',
+			failureFlash: true
+		}));
 
 	app.route('/login')
 		.get((req, res) => {
-			res.sendFile(path + '/public/login.html');
-		});
+			req.logout();
+			res.render('pages/login', {message: req.flash('loginMessage')});
+		})
+		.post(passport.authenticate('local-login', {
+			successRedirect: '/',
+			failureRedirect: '/login',
+			failureFlash: true
+		}));
 
 	app.route('/logout')
 		.get((req, res) => {
@@ -35,12 +50,19 @@ module.exports = (app, passport) => {
 
 	app.route('/settings')
 		.get(isLoggedIn, (req, res) => {
-			res.sendFile(path + '/public/settings.html');
-		});
+			res.render('pages/settings', {user: req.user});
+		})
+		.post(userHandler.changeSettings);
+		
+	app.route('/changePassword')
+		.post(userHandler.changePassword);
+		
+	app.route('/deleteAccount')
+		.delete(userHandler.deleteAccount);
 
 	app.route('/api/:id')
-		.get(isLoggedIn, (req, res) => {
-			res.json(req.user);
+		.get((req, res) => {
+			req.user ? res.json(req.user) : res.sendStatus(401);
 		});
 
 };

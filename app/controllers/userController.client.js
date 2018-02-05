@@ -2,11 +2,17 @@
 
 (function () {
 
-   var apiUrl = appUrl + '/api/:id';
+   const apiUrl = appUrl + '/api/:id';
 
-   ajaxFunctions.ready(ajaxFunctions.ajaxRequest('GET', apiUrl, function (data) {
-      var userObject = JSON.parse(data);
-
+   ajaxFunctions.ready(ajaxFunctions.ajaxRequest('GET', apiUrl, (status, data) => {
+      let userObject;
+      try {
+         userObject = JSON.parse(data);
+      }
+      catch (err) {
+         console.log(data);
+      }
+      if (userObject) console.log(userObject);
 
    }));
 })();
