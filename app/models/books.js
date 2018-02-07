@@ -3,8 +3,9 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const BookSchema = new Schema({
+    goodreadsId: Number,
 	user_email: String,
-	name: String,
+	title: String,
 	img_url: String
 });
 

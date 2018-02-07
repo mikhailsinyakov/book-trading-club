@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<% include ../partials/head  %>
-	</head>
+	<% include ../partials/head  %>
 	<body>
-		<header>
-			<% include ../partials/header %>
-		</header>
+		<% include ../partials/header %>
+		
+		<form id="addBook" action="/api/addBook" method="POST">
+		    <input type="email" name="email" autocomplete="email" value=<%= user.email %> required style="display:none"/>
+		    <input type="text" name="bookName" required/>
+		    <button type="submit">Add</button>
+		</form>
 		
 		<div class="books">
 		    

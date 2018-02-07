@@ -14,8 +14,8 @@ function BooksController() {
                     const img = document.createElement("img");
                     img.src = val.img_url;
                     img.alt = val.name;
-                    img.width = 100;
-                    img.height = 140;
+                    img.width = 98;
+                    img.height = 147;
                     booksContainer.appendChild(img);
                 });
             }

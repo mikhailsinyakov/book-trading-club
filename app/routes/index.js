@@ -74,10 +74,13 @@ module.exports = (app, passport) => {
 		.delete(userHandler.deleteAccount);
 		
 	app.route('/api/getAllBooks')
-		.get(booksHandler.getAllBooks);
+		.get(isLoggedIn, booksHandler.getAllBooks);
 		
 	app.route('/api/getMyBooks')
-		.get(booksHandler.getMyBooks);
+		.get(isLoggedIn, booksHandler.getMyBooks);
+		
+	app.route('/api/addBook')
+		.post(isLoggedIn, booksHandler.addBook);
 	
 
 	/*app.route('/api/:id')
