@@ -25,8 +25,8 @@
     const deleteAccountBtn = document.querySelector("#deleteAccount");
     if (deleteAccountBtn) deleteAccountBtn.onclick = () => {
         if (confirm("Are you sure?")) {
-            ajaxFunctions.ready(ajaxFunctions.ajaxRequest("DELETE", "/deleteAccount", status => {
-                if (status == 200) location.reload(true);
+            ajaxFunctions.ready(ajaxFunctions.ajaxRequest("DELETE", "/api/deleteAccount", status => {
+                if (status == 200) location.reload();
             }));
         }
     };

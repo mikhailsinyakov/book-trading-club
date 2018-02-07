@@ -4,7 +4,7 @@
 
    const apiUrl = appUrl + '/api/:id';
 
-   ajaxFunctions.ready(ajaxFunctions.ajaxRequest('GET', apiUrl, (status, data) => {
+   /*ajaxFunctions.ready(ajaxFunctions.ajaxRequest('GET', apiUrl, (status, data) => {
       let userObject;
       try {
          userObject = JSON.parse(data);
@@ -14,5 +14,5 @@
       }
       if (userObject) console.log(userObject);
 
-   }));
+   }));*/
 })();

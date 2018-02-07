@@ -1,6 +1,8 @@
 <% if(typeof user != 'undefined') { %>
     <p>
         Welcome <%= user.firstName %>
+        <a href="/allBooks">All books</a>
+        <a href="/myBooks">My books</a>
         <a href="/">Home</a>
         <a href="/settings">Settings</a>
         <a href="/logout">Log out</a>

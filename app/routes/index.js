@@ -2,8 +2,10 @@
 
 const path = process.cwd();
 const UserHandler = require('../controllers/userHandler.server');
+const BooksHandler = require('../controllers/booksHandler.server');
 
 const userHandler = new UserHandler();
+const booksHandler = new BooksHandler();
 
 module.exports = (app, passport) => {
 
@@ -54,15 +56,33 @@ module.exports = (app, passport) => {
 		})
 		.post(userHandler.changeSettings);
 		
-	app.route('/changePassword')
+	app.route('/allBooks')
+		.get(isLoggedIn, (req, res) => {
+			res.render('pages/allBooks', {user: req.user});
+		});
+		
+	app.route('/myBooks')
+		.get(isLoggedIn, (req, res) => {
+			res.render('pages/myBooks', {user: req.user});
+	});
+	
+		
+	app.route('/api/changePassword')
 		.post(userHandler.changePassword);
 		
-	app.route('/deleteAccount')
+	app.route('/api/deleteAccount')
 		.delete(userHandler.deleteAccount);
+		
+	app.route('/api/getAllBooks')
+		.get(booksHandler.getAllBooks);
+		
+	app.route('/api/getMyBooks')
+		.get(booksHandler.getMyBooks);
+	
 
-	app.route('/api/:id')
+	/*app.route('/api/:id')
 		.get((req, res) => {
 			req.user ? res.json(req.user) : res.sendStatus(401);
-		});
+		});*/
 
 };
