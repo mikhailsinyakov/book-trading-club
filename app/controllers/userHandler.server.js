@@ -1,6 +1,8 @@
 "use script";
 const Users = require('../models/users');
+const BooksHandler = require('./booksHandler.server');
 
+const booksHandler = new BooksHandler();
 
 function UserHandler() {
     
@@ -36,7 +38,7 @@ function UserHandler() {
         Users.findOne({email: req.user.email}, (err, user) => {
             if (err) return res.status(500).send(err);
             user.remove();
-            res.sendStatus(200);
+            booksHandler.deleteAllBooksOfUser(req, res);
         });
     };
 }

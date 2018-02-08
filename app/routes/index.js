@@ -82,6 +82,8 @@ module.exports = (app, passport) => {
 	app.route('/api/addBook')
 		.post(isLoggedIn, booksHandler.addBook);
 	
+	app.route('/api/deleteBook/:id')
+		.delete(isLoggedIn, booksHandler.deleteBook);
 
 	/*app.route('/api/:id')
 		.get((req, res) => {

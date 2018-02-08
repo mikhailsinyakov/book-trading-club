@@ -1,18 +1,16 @@
 'use strict';
 
-(function () {
+function UserController() {
+   this.deleteAccount = () => {
+      const deleteAccountBtn = document.querySelector("#deleteAccount");
+      if (deleteAccountBtn) deleteAccountBtn.onclick = () => {
+         if (confirm("Are you sure?")) {
+            ajaxFunctions.ready(ajaxFunctions.ajaxRequest("DELETE", "/api/deleteAccount", status => {
+                  if (status == 200) location.reload();
+            }));
+         }
+      };
+   };
+}
 
-   const apiUrl = appUrl + '/api/:id';
-
-   /*ajaxFunctions.ready(ajaxFunctions.ajaxRequest('GET', apiUrl, (status, data) => {
-      let userObject;
-      try {
-         userObject = JSON.parse(data);
-      }
-      catch (err) {
-         console.log(data);
-      }
-      if (userObject) console.log(userObject);
-
-   }));*/
-})();
+const userController = new UserController();

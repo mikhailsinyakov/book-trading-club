@@ -40,7 +40,6 @@ function BooksHandler() {
                 const newBook = new Books({goodreadsId, user_email, title, img_url});
                 newBook.save((err, result) => {
                     if (err) return res.status(500).send(err);
-                    console.log(result);
                     res.redirect('/myBooks');
                 });
             });
@@ -48,6 +47,21 @@ function BooksHandler() {
         });
     };
     
+    this.deleteAllBooksOfUser = (req, res) => {
+        Books.deleteMany({user_email: req.user.email}, err => {
+            if (err) return res.status(500).send(err);
+            res.sendStatus(200);
+        });
+    };
+    
+    this.deleteBook = (req, res) => {
+        const goodreadsId = req.params.id;
+        Books.findOne({user_email: req.user.email, goodreadsId}, (err, book) => {
+            if (err) return res.status(500).send(err);
+            book.remove();
+            res.sendStatus(200);
+        });
+    };
 }
 
 module.exports = BooksHandler;

@@ -22,3 +22,11 @@ body {
 	margin: 0;
 	padding: 0;
 }
+
+
+.fa {
+  position: absolute;
+  cursor: pointer;
+  transform: translateX(-15px);
+  color: rgba(255, 255, 255, 0.85);
+}

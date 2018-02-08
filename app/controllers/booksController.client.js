@@ -2,27 +2,27 @@
 
 function BooksController() {
     
-    this.getBooks = () => {
+    this.getBooks = callback => {
         let apiUrl;
-        if (location.pathname == '/allBooks') apiUrl = appUrl + '/api/getAllBooks';
-        if (location.pathname == '/myBooks') apiUrl = appUrl + '/api/getMyBooks';
+        const isAllBooksPage = location.pathname == '/allBooks';
+        const isMyBooksPage = location.pathname == '/myBooks';
+        if (isAllBooksPage) apiUrl = '/api/getAllBooks';
+        if (isMyBooksPage) apiUrl = '/api/getMyBooks';
         ajaxFunctions.ready(ajaxFunctions.ajaxRequest('GET', apiUrl, (status, data) => {
             if (status == 200) {
                 const books = JSON.parse(data);
-                const booksContainer = document.querySelector(".books");
-                books.forEach(val => {
-                    const img = document.createElement("img");
-                    img.src = val.img_url;
-                    img.alt = val.name;
-                    img.width = 98;
-                    img.height = 147;
-                    booksContainer.appendChild(img);
-                });
+                callback(books);
             }
+        }));
+    };
+    
+    this.deleteBook = id => {
+        const apiUrl = `/api/deleteBook/${id}`;
+        ajaxFunctions.ready(ajaxFunctions.ajaxRequest('DELETE', apiUrl, (status, data) => {
+            if (status == 200) location.reload();
         }));
     };
     
 }
 
 const booksController = new BooksController();
-booksController.getBooks();
