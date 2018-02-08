@@ -31,14 +31,20 @@ function BooksHandler() {
             const bookData = data.GoodreadsResponse.search.results.work[0];
             const goodreadsId = +bookData.id._text;
             const user_email = req.body.email;
-            const title = bookData.best_book.title._text;
-            const img_url = bookData.best_book.image_url._text;
-            const newBook = new Books({goodreadsId, user_email, title, img_url});
-            newBook.save((err, result) => {
+            Books.find({user_email}, (err, books) => {
                 if (err) return res.status(500).send(err);
-                console.log(result);
-                res.redirect('/myBooks');
+                const alreadyAdded = !!books.filter(book => book.goodreadsId == goodreadsId).length;
+                if (alreadyAdded) return res.status(409).send('This book has already added');
+                const title = bookData.best_book.title._text;
+                const img_url = bookData.best_book.image_url._text;
+                const newBook = new Books({goodreadsId, user_email, title, img_url});
+                newBook.save((err, result) => {
+                    if (err) return res.status(500).send(err);
+                    console.log(result);
+                    res.redirect('/myBooks');
+                });
             });
+            
         });
     };
     
