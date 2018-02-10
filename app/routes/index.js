@@ -3,9 +3,11 @@
 const path = process.cwd();
 const UserHandler = require('../controllers/userHandler.server');
 const BooksHandler = require('../controllers/booksHandler.server');
+const TradesHandler = require('../controllers/tradesHandler.server');
 
 const userHandler = new UserHandler();
 const booksHandler = new BooksHandler();
+const tradesHandler = new TradesHandler();
 
 module.exports = (app, passport) => {
 
@@ -58,12 +60,12 @@ module.exports = (app, passport) => {
 		
 	app.route('/allBooks')
 		.get(isLoggedIn, (req, res) => {
-			res.render('pages/allBooks', {user: req.user});
+			res.render('pages/allBooks', {user: req.user, message: req.flash('proposal')});
 		});
 		
 	app.route('/myBooks')
 		.get(isLoggedIn, (req, res) => {
-			res.render('pages/myBooks', {user: req.user});
+			res.render('pages/myBooks', {user: req.user, message: req.flash('addBook')});
 	});
 	
 		
@@ -84,6 +86,9 @@ module.exports = (app, passport) => {
 	
 	app.route('/api/deleteBook/:id')
 		.delete(isLoggedIn, booksHandler.deleteBook);
+		
+	app.route('/api/proposeTrade/:id/:email')
+		.put(isLoggedIn, tradesHandler.proposeTrade);
 
 	/*app.route('/api/:id')
 		.get((req, res) => {

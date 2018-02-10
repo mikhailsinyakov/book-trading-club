@@ -4,9 +4,10 @@
 	<body>
 		<% include ../partials/header %>
 		
-		<div class="books">
-		    
-		</div>
+		<% if (message) { %>
+			<p><%= message %></p>
+		<% } %>
+		<div class="books"></div>
 	    
 	    <% include ../partials/controllers %>
 	    <script type="text/javascript" src="common/actions.js"></script>

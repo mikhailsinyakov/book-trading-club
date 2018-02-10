@@ -23,10 +23,18 @@ body {
 	padding: 0;
 }
 
-
 .fa {
   position: absolute;
+  padding: 4px;
   cursor: pointer;
-  transform: translateX(-15px);
-  color: rgba(255, 255, 255, 0.85);
+  transform: translateX(-20px);
+  color: white;
+}
+
+.fa:hover {
+  background: green;
+}
+
+.fa-exchange-alt {
+  transform: translateX(-24px);
 }

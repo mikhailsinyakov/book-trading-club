@@ -10,7 +10,17 @@ const UserSchema = new Schema({
 	firstName: String,
     lastName: String,
     city: String,
-    country: String
+    country: String,
+    usersTradeRequests: [{
+        goodreadsId: Number,
+        owner_email: String,
+        state: String
+    }],
+    tradeRequestsForUser: [{
+        goodreadsId: Number,
+        offerer_email: String,
+        state: String
+    }]
 });
 
 UserSchema.methods.generateHash = password => {

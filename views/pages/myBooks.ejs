@@ -4,11 +4,18 @@
 	<body>
 		<% include ../partials/header %>
 		
+		<button type="button">Your trade requests (<%= user.usersTradeRequests.length %>)</button>
+		<button type="button">Trade requests for you (<%= user.tradeRequestsForUser.length %>)</button>
+		
 		<form id="addBook" action="/api/addBook" method="POST">
 		    <input type="email" name="email" autocomplete="email" value=<%= user.email %> required style="display:none"/>
 		    <input type="text" name="bookName" required/>
 		    <button type="submit">Add</button>
 		</form>
+		
+		<% if (message) { %>
+			<p><%= message %></p>
+		<% } %>
 		
 		<div class="books">
 		    

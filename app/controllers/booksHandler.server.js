@@ -2,11 +2,14 @@
 const request = require('request');
 const convert = require('xml-js');
 const Books = require('../models/books');
+const TradesHandler = require('./tradesHandler.server');
+
+const tradesHandler = new TradesHandler();
 
 function BooksHandler() {
     
     this.getAllBooks = (req, res) => {
-        Books.find({}, {user_email: false, _id: false}, (err, books) => {
+        Books.find({}, {_id: false}, (err, books) => {
             if (err) return res.status(500).send(err);
             res.json(books);
         });
@@ -28,6 +31,11 @@ function BooksHandler() {
         request(url, (err, response, body) => {
             if (err) return res.status(500).send(err);
             const data = convert.xml2js(body, {compact: true});
+            const results = data.GoodreadsResponse.search.results;
+            if (!results.work) {
+                req.flash('addBook', 'This book not found');
+                return res.redirect('/myBooks');
+            }
             const bookData = data.GoodreadsResponse.search.results.work[0];
             const goodreadsId = +bookData.id._text;
             const user_email = req.body.email;
@@ -50,7 +58,7 @@ function BooksHandler() {
     this.deleteAllBooksOfUser = (req, res) => {
         Books.deleteMany({user_email: req.user.email}, err => {
             if (err) return res.status(500).send(err);
-            res.sendStatus(200);
+            tradesHandler.deleteAllProposalsOfUser(req, res);
         });
     };
     

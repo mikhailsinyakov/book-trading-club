@@ -11,6 +11,7 @@ function UserController() {
          }
       };
    };
+   
 }
 
 const userController = new UserController();
