@@ -39,35 +39,49 @@ function BooksHandler() {
             const bookData = data.GoodreadsResponse.search.results.work[0];
             const goodreadsId = +bookData.id._text;
             const user_email = req.body.email;
-            Books.find({user_email}, (err, books) => {
-                if (err) return res.status(500).send(err);
-                const alreadyAdded = !!books.filter(book => book.goodreadsId == goodreadsId).length;
-                if (alreadyAdded) return res.status(409).send('This book has already added');
-                const title = bookData.best_book.title._text;
-                const img_url = bookData.best_book.image_url._text;
-                const newBook = new Books({goodreadsId, user_email, title, img_url});
-                newBook.save((err, result) => {
-                    if (err) return res.status(500).send(err);
-                    res.redirect('/myBooks');
-                });
-            });
+            Books.find({user_email})
+                    .then(books => {
+                        const alreadyAdded = !!books.filter(book => book.goodreadsId == goodreadsId).length;
+                        if (alreadyAdded) return res.status(409).send('This book has already added');
+                        const title = bookData.best_book.title._text;
+                        const img_url = bookData.best_book.image_url._text;
+                        const newBook = new Books({goodreadsId, user_email, title, img_url});
+                        newBook.save()
+                                .then(() => res.redirect('/myBooks'))
+                                .catch(err => res.status(500).send(err));
+                    })
+                    .catch(err => res.status(500).send(err));
             
         });
     };
     
-    this.deleteAllBooksOfUser = (req, res) => {
-        Books.deleteMany({user_email: req.user.email}, err => {
-            if (err) return res.status(500).send(err);
-            tradesHandler.deleteAllProposalsOfUser(req, res);
-        });
+    this.deleteAllBooksOfUser = (user_email) => {
+        return new Promise((resolve, reject) => {
+            Books.find({user_email: user_email})
+                    .then(books => {
+                        return new Promise((resolve, reject) => {
+                            const deleteBookPromises = [];
+                            books.forEach(book => {
+                                deleteBookPromises.push(this.deleteBook(book.goodreadsId, user_email));
+                            });
+                            Promise.all(deleteBookPromises)
+                                    .then(status => resolve(status))
+                                    .catch(err => reject(err));
+                        });
+                    })
+                        
+                    .then(status => resolve(status))
+                    .catch(err => reject(err));
+            });
     };
     
-    this.deleteBook = (req, res) => {
-        const goodreadsId = req.params.id;
-        Books.findOne({user_email: req.user.email, goodreadsId}, (err, book) => {
-            if (err) return res.status(500).send(err);
-            book.remove();
-            res.sendStatus(200);
+    this.deleteBook = (goodreadsId, user_email) => {
+        return new Promise((resolve, reject) => {
+            Books.findOne({user_email, goodreadsId})
+                    .then(book => book.remove())
+                    .then(() => tradesHandler.deleteAllProposalsOfBook(goodreadsId, user_email))
+                    .then(status => resolve(status))
+                    .catch(err => reject(err));
         });
     };
 }

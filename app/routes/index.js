@@ -85,7 +85,11 @@ module.exports = (app, passport) => {
 		.post(isLoggedIn, booksHandler.addBook);
 	
 	app.route('/api/deleteBook/:id')
-		.delete(isLoggedIn, booksHandler.deleteBook);
+		.delete(isLoggedIn, (req, res) => {
+			booksHandler.deleteBook(req.params.id, req.user.email)
+						.then(status => res.sendStatus(status))
+						.catch(err => res.status(500).send(err));
+			});
 		
 	app.route('/api/proposeTrade/:id/:email')
 		.put(isLoggedIn, tradesHandler.proposeTrade);
