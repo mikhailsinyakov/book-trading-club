@@ -90,10 +90,16 @@ module.exports = (app, passport) => {
 						.then(status => res.sendStatus(status))
 						.catch(err => res.status(500).send(err));
 			});
+			
+	app.route('/api/getTradesOfUser')
+		.get(isLoggedIn, tradesHandler.getTradesOfUser);
 		
 	app.route('/api/proposeTrade/:id/:email')
 		.put(isLoggedIn, tradesHandler.proposeTrade);
-
+	
+	app.route('/api/respondToProposal/:id/:email/:respond')
+		.put(isLoggedIn, tradesHandler.changeStateOfProposal);
+	
 	/*app.route('/api/:id')
 		.get((req, res) => {
 			req.user ? res.json(req.user) : res.sendStatus(401);

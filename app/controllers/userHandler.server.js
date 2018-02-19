@@ -1,12 +1,16 @@
 "use script";
 const Users = require('../models/users');
-const BooksHandler = require('./booksHandler.server');
-const TradesHandler = require('./tradesHandler.server');
-
-const booksHandler = new BooksHandler();
-const tradesHandler = new TradesHandler();
 
 function UserHandler() {
+    
+    this.getUserFirstNameByEmail = email => {
+        return new Promise((resolve, reject) => {
+            Users.findOne({email})
+                    .then(user => resolve(user.firstName))
+                    .catch(err => reject(err));
+        });
+        
+    };
     
     this.changeSettings = (req, res) => {
         Users.findOne({email: req.body.email})
@@ -39,6 +43,11 @@ function UserHandler() {
     };
     
     this.deleteAccount = (req, res) => {
+        
+        const BooksHandler = require('./booksHandler.server');
+        const TradesHandler = require('./tradesHandler.server');
+        const booksHandler = new BooksHandler();
+        const tradesHandler = new TradesHandler();
         const user_email = req.user.email;
         Users.findOne({email: user_email})
                 .then(user => user.remove())

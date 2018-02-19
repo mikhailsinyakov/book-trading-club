@@ -4,8 +4,13 @@
 	<body>
 		<% include ../partials/header %>
 		
-		<button type="button">Your trade requests (<%= user.usersTradeRequests.length %>)</button>
-		<button type="button">Trade requests for you (<%= user.tradeRequestsForUser.length %>)</button>
+		<button type="button" class="toggleRequests yours">
+			Your trade requests (<span class="yours"></span>)
+		</button>
+		<button type="button" class="toggleRequests forYou">
+			Trade requests for you (<span class="forYou"></span>)
+		</button>
+		
 		
 		<form id="addBook" action="/api/addBook" method="POST">
 		    <input type="email" name="email" autocomplete="email" value=<%= user.email %> required style="display:none"/>
@@ -17,9 +22,7 @@
 			<p><%= message %></p>
 		<% } %>
 		
-		<div class="books">
-		    
-		</div>
+		<div class="books"></div>
 	
 		<% include ../partials/controllers %>
 	    <script type="text/javascript" src="common/actions.js"></script>

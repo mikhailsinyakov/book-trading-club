@@ -2,11 +2,16 @@
 const request = require('request');
 const convert = require('xml-js');
 const Books = require('../models/books');
-const TradesHandler = require('./tradesHandler.server');
-
-const tradesHandler = new TradesHandler();
 
 function BooksHandler() {
+    
+    this.getBookTitleById = goodreadsId => {
+        return new Promise((resolve, reject) => {
+            Books.findOne({goodreadsId})
+                    .then(book => resolve(book.title))
+                    .catch(err => reject(err));
+        });
+    };
     
     this.getAllBooks = (req, res) => {
         Books.find({}, {_id: false}, (err, books) => {
@@ -57,28 +62,17 @@ function BooksHandler() {
     
     this.deleteAllBooksOfUser = (user_email) => {
         return new Promise((resolve, reject) => {
-            Books.find({user_email: user_email})
-                    .then(books => {
-                        return new Promise((resolve, reject) => {
-                            const deleteBookPromises = [];
-                            books.forEach(book => {
-                                deleteBookPromises.push(this.deleteBook(book.goodreadsId, user_email));
-                            });
-                            Promise.all(deleteBookPromises)
-                                    .then(status => resolve(status))
-                                    .catch(err => reject(err));
-                        });
-                    })
-                        
-                    .then(status => resolve(status))
+            Books.remove({user_email})
+                    .then(() => resolve(200))
                     .catch(err => reject(err));
             });
     };
     
     this.deleteBook = (goodreadsId, user_email) => {
+        const TradesHandler = require('./tradesHandler.server');
+        const tradesHandler = new TradesHandler();
         return new Promise((resolve, reject) => {
-            Books.findOne({user_email, goodreadsId})
-                    .then(book => book.remove())
+            Books.remove({goodreadsId, user_email})
                     .then(() => tradesHandler.deleteAllProposalsOfBook(goodreadsId, user_email))
                     .then(status => resolve(status))
                     .catch(err => reject(err));

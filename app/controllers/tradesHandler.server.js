@@ -1,109 +1,92 @@
 "use strict";
-const Users = require('../models/users');
+const Trades = require('../models/trades');
 
 function TradesHandler() {
     this.proposeTrade = (req, res) => {
-        const user_email = req.user.email;
-        const owner_email = req.params.email;
-        const goodreadsId = req.params.id;
+        const UserHandler = require('./userHandler.server');
+        const BooksHandler = require('./booksHandler.server');
+        const userHandler = new UserHandler();
+        const booksHandler = new BooksHandler();
         
-        if (owner_email == user_email) {
+        const goodreadsId = req.params.id;
+        const owner_email = req.params.email;
+        const offerer_email = req.user.email;
+        
+        if (owner_email == offerer_email) {
             req.flash('proposal', 'This is your book');
             return res.sendStatus(200);
         }
         
-        Users.find({})
-                .then(users => {
-                    const askingUser = users.filter(user => user.email == user_email)[0];
-                    const ownerUser = users.filter(user => user.email == owner_email)[0];
-                    const wasProposal = askingUser.usersTradeRequests.filter(val => val.owner_email == owner_email 
-                                                                                 && val.goodreadsId == goodreadsId).length;
-                    if (wasProposal) {
-                        req.flash('proposal', 'You have already asked for this book');
-                        return res.sendStatus(200);
-                    }
-                    
-                    askingUser.usersTradeRequests.push({
-                        state: 'sended',
-                        owner_email: owner_email,
-                        goodreadsId
-                    });
-                    
-                    ownerUser.tradeRequestsForUser.push({
-                        state: 'sended',
-                        offerer_email: user_email,
-                        goodreadsId
-                    });
-                    
-                    const saveAskingUserPromise = askingUser.save();
-                    const saveOwnerUserPromise = ownerUser.save();
-                    
-                    Promise.all([saveAskingUserPromise, saveOwnerUserPromise])
-                            .then(() => res.sendStatus(200))
-                            .catch(err => res.status(500).send(err));
-                    
+        const newTrade = new Trades({goodreadsId, owner_email, offerer_email, state: 'sended'});
+        const getInfoPromises = [
+            userHandler.getUserFirstNameByEmail(owner_email),
+            userHandler.getUserFirstNameByEmail(offerer_email),
+            booksHandler.getBookTitleById(goodreadsId)
+        ];
+        
+        Promise.all(getInfoPromises)
+                .then(results => {
+                    newTrade.owner_firstName = results[0];
+                    newTrade.offerer_firstName = results[1];
+                    newTrade.bookTitle = results[2];
+                    newTrade.save().then(() => res.sendStatus(200))
+                                    .catch(err => res.status(500).send(err));
                 })
                 .catch(err => res.status(500).send(err));
+        
+        
+    };
+    
+    this.getTradesOfUser = (req, res) => {
+        const user_email = req.user.email;
+        Trades.find().or([{owner_email: user_email}, {offerer_email: user_email}])
+                        .then(trades => {
+                            const response = {
+                                usersTradeRequests: [],
+                                tradeRequestsForUser: []
+                            };
+                            trades.forEach(trade => {
+                                if (trade.owner_email == user_email) {
+                                    response.tradeRequestsForUser.push(trade);
+                                }
+                                else {
+                                    response.usersTradeRequests.push(trade);
+                                }
+                            });
+                            res.json(response);
+                        }).catch(err => res.status(500).send(err));
     };
     
     this.deleteAllProposalsOfUser = (user_email) => {
         return new Promise((resolve, reject) => {
-            Users.find({}).then(users => {
-                let linkedUsers = users.filter(user => {
-                    return user.tradeRequestsForUser.filter(val => val.offerer_email == user_email).length;
-                });
-                
-                linkedUsers = linkedUsers.map(user => {
-                    user.tradeRequestsForUser = user.tradeRequestsForUser.filter(val => val.offerer_email != user_email);
-                    return user;
-                });
-                
-                const savePromises = [];
-                linkedUsers.forEach(user => savePromises.push(user.save()));
-                
-                Promise.all(savePromises)
-                        .then(() => resolve(200))
-                        .catch(err => reject(err));
-                
-            }).catch((err) => reject(err));
+            Trades.remove().or([{owner_email: user_email}, {offerer_email: user_email}])
+                            .then(() => resolve(200))
+                            .catch(err => reject(err));
         });
         
     };
     
-    this.deleteAllProposalsOfBook = (goodreadsId, user_email) => {
+    this.deleteAllProposalsOfBook = (goodreadsId, owner_email) => {
         return new Promise((resolve, reject) => {
-            Users.find({}).then(users => {
-                let linkedUsers = users.filter(user => {
-                    return user.usersTradeRequests.filter(val => {
-                                return val.owner_email == user_email 
-                                    && val.goodreadsId == goodreadsId;
-                                }).length
-                        || user.tradeRequestsForUser.filter(val => {
-                                return val.goodreadsId == goodreadsId;
-                                }).length;
-                });
-                
-                linkedUsers = linkedUsers.map(user => {
-                    user.usersTradeRequests = user.usersTradeRequests.filter(val => {
-                        return val.owner_email != user_email 
-                            || val.goodreadsId != goodreadsId;
-                    });
-                    user.tradeRequestsForUser = user.tradeRequestsForUser.filter(val => {
-                        return val.goodreadsId != goodreadsId;
-                    });
-                    return user;
-                });
-                
-                const savePromises = [];
-                linkedUsers.forEach(user => savePromises.push(user.save()));
-                
-                Promise.all(savePromises)
-                        .then(() => resolve(200))
-                        .catch(err => reject(err));
-                
-            }).catch((err) => reject(err));
+            Trades.remove({goodreadsId, owner_email})
+                    .then(() => resolve(200))
+                    .catch(err => reject(err));
         });
     };
+    
+    this.changeStateOfProposal = (req, res) => {
+        const goodreadsId = req.params.id;
+        const owner_email = req.user.email;
+        const respond = req.params.respond;
+        Trades.findOne({goodreadsId, owner_email})
+                .tnen(trade => {
+                    trade.state = respond;
+                    trade.save()
+                            .then(() => res.sendStatus(200))
+                            .catch(err => res.status(500).send(err));
+                }).catch(err => res.status(500).send(err));
+    };
+    
 }
 
 module.exports = TradesHandler;
