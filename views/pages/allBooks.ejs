@@ -4,12 +4,17 @@
 	<body>
 		<% include ../partials/header %>
 		
-		<% if (message) { %>
-			<p><%= message %></p>
-		<% } %>
-		<div class="books"></div>
-	    
-	    <% include ../partials/controllers %>
+		<main class="container">
+			<h1>All books:</h1>
+			
+			<% if (message[0]) { %>
+				<div class="alert alert-primary"><%= message %></div>
+			<% } %>
+			<div class="books"></div>
+		    
+		</main>
+		
+		<% include ../partials/controllers %>
 	    <script type="text/javascript" src="common/actions.js"></script>
 	</body>
 </html>

@@ -17,20 +17,28 @@ function TradesHandler() {
             return res.sendStatus(200);
         }
         
-        const newTrade = new Trades({goodreadsId, owner_email, offerer_email, state: 'sended'});
-        const getInfoPromises = [
-            userHandler.getUserFirstNameByEmail(owner_email),
-            userHandler.getUserFirstNameByEmail(offerer_email),
-            booksHandler.getBookTitleById(goodreadsId)
-        ];
-        
-        Promise.all(getInfoPromises)
-                .then(results => {
-                    newTrade.owner_firstName = results[0];
-                    newTrade.offerer_firstName = results[1];
-                    newTrade.bookTitle = results[2];
-                    newTrade.save().then(() => res.sendStatus(200))
-                                    .catch(err => res.status(500).send(err));
+        Trades.findOne({goodreadsId, owner_email, offerer_email})
+                .then(trade => {
+                    if (trade) {
+                        req.flash('proposal', 'You have already made a proposal to this book');
+                        return res.sendStatus(200);
+                    }
+                    const newTrade = new Trades({goodreadsId, owner_email, offerer_email, state: 'sended'});
+                    const getInfoPromises = [
+                        userHandler.getUserFirstNameByEmail(owner_email),
+                        userHandler.getUserFirstNameByEmail(offerer_email),
+                        booksHandler.getBookTitleById(goodreadsId)
+                    ];
+                    
+                    Promise.all(getInfoPromises)
+                            .then(results => {
+                                newTrade.owner_firstName = results[0];
+                                newTrade.offerer_firstName = results[1];
+                                newTrade.bookTitle = results[2];
+                                newTrade.save().then(() => res.sendStatus(200))
+                                                .catch(err => res.status(500).send(err));
+                            })
+                            .catch(err => res.status(500).send(err));
                 })
                 .catch(err => res.status(500).send(err));
         

@@ -8,7 +8,7 @@ function DOMController() {
         books.forEach(book => {
             const img = document.createElement("img");
             img.src = book.img_url;
-            img.alt = book.name;
+            img.alt = book.title;
             img.width = 98;
             img.height = 147;
             booksContainer.appendChild(img);
@@ -51,28 +51,38 @@ function DOMController() {
                     table.appendChild(tableRow);
                 });
             }
-            document.body.insertBefore(table, form);
+            document.querySelector("main").insertBefore(table, form);
         }
         
         function createTable(isUsersRequest) {
-            const table = document.createElement("div");
+            const table = document.createElement("table");
             table.id = isUsersRequest ? "yours" : "forYou";
             table.classList.add("tradeRequests");
+            table.classList.add("table");
             table.style.display = "none";
             return table;
         }
         
         function createTableHead (isUsersRequest) {
             const tableHead = document.createElement("thead");
+            const tableRow = document.createElement("tr");
             const tableHeader1 = document.createElement("th");
             const tableHeader2 = document.createElement("th");
             const tableHeader3 = document.createElement("th");
+            
             tableHeader1.innerHTML = isUsersRequest ? "Owner" : "Offerer";
             tableHeader2.innerHTML = "Title";
             tableHeader3.innerHTML = "Answer";
-            tableHead.appendChild(tableHeader1);
-            tableHead.appendChild(tableHeader2);
-            tableHead.appendChild(tableHeader3);
+            
+            tableHeader1.classList.add("text-center");
+            tableHeader2.classList.add("text-center");
+            tableHeader3.classList.add("text-center");
+            
+            tableRow.appendChild(tableHeader1);
+            tableRow.appendChild(tableHeader2);
+            tableRow.appendChild(tableHeader3);
+            tableHead.appendChild(tableRow);
+            tableHead.classList.add("thead-light");
             return tableHead;
         }
         
@@ -99,6 +109,8 @@ function DOMController() {
                 const icon = createIcon(isUsersRequest, trade.state);
                 tableData3.appendChild(icon);
             }
+            
+            tableData3.classList.add("text-center");
             
             tableRow.appendChild(tableData1);
             tableRow.appendChild(tableData2);

@@ -47,7 +47,10 @@ function BooksHandler() {
             Books.find({user_email})
                     .then(books => {
                         const alreadyAdded = !!books.filter(book => book.goodreadsId == goodreadsId).length;
-                        if (alreadyAdded) return res.status(409).send('This book has already added');
+                        if (alreadyAdded) {
+                            req.flash('addBook', 'You have already added this book');
+                            return res.redirect('/myBooks');
+                        }
                         const title = bookData.best_book.title._text;
                         const img_url = bookData.best_book.image_url._text;
                         const newBook = new Books({goodreadsId, user_email, title, img_url});

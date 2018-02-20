@@ -3,7 +3,7 @@
 function TradesController() {
     this.proposeTrade = (booksId, user_email) => {
         const apiUrl = `/api/proposeTrade/${booksId}/${user_email}`;
-        ajaxFunctions.ready(ajaxFunctions.ajaxRequest("PUT", apiUrl, (status, data) => {
+        ajaxFunctions.ready(ajaxFunctions.ajaxRequest("POST", apiUrl, (status, data) => {
             if (status == 200) location.reload();
         }));
     };

@@ -1,18 +1,33 @@
-<header>
+<header class="container text-center bg-light">
     <% if(typeof user != 'undefined') { %>
-        <p>
-            Welcome <%= user.firstName %>
-            <a href="/allBooks">All books</a>
-            <a href="/myBooks">My books</a>
-            <a href="/">Home</a>
-            <a href="/settings">Settings</a>
-            <a href="/logout">Log out</a>
-        </p>
+        <p>Welcome <%= user.firstName %>!</p>
+        <ul class="nav justify-content-start">
+            <li class="nav-item">
+                <a class="nav-link" href="/allBooks">All books</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/myBooks">My books</a>
+            </li>
+        </ul>
+        <ul class="nav justify-content-end">
+            <li class="nav-item">
+                <a class="nav-link fas fa-home" href="/"></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link fas fa-cogs" href="/settings"></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link fas fa-sign-out-alt" href="/logout"></a>
+            </li>
+        </ul>
     <% } else { %>
-        <p>
-            <a href="/">Home</a>
-            <a href="/login">Login</a>
-            <a href="/signup">Sign up</a>
-        </p>
+        <ul class="nav justify-content-center">
+            <li class="nav-item">
+                <a class="nav-link fas fa-home" href="/"></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link fas fa-sign-in-alt" href="/login"></a>
+            </li>
+        </ul>
     <% } %>
 </header>

@@ -23,8 +23,84 @@ body {
 	padding: 0;
 }
 
-.fa {
+header {
+  padding: 25px;
+  border-radius: 10px;
+}
+
+header ul:nth-child(3) {
+  width: 50%;
+  transform: translate(100%, -40px);
+}
+
+header .fas {
+  font-size: 22px;
+}
+
+main {
+  padding: 20px;
+}
+
+footer {
+  padding: 15px;
+  border-radius: 10px;
   position: absolute;
+  bottom: 0;
+  transform: translateX(10%);
+}
+
+table {
+  margin: 20px;
+}
+
+.books {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.books img {
+  margin-bottom: 24px;
+}
+
+i + i {
+  margin-left: 10px;
+}
+
+#addBook {
+  margin-top: 20px;
+}
+
+#addBtn {
+  transform: translateY(-2.5px);
+}
+
+.formsContainer {
+  display: flex;
+  justify-content: space-around;
+}
+
+#deleteAccount {
+  position: absolute;
+  transform: translateX(300px);
+}
+
+.signupBtn {
+  transform: translateY(40px);
+}
+
+.signupBtn a {
+  color: inherit;
+}
+
+.signupBtn a:hover {
+  text-decoration: none;
+  color: inherit;
+}
+
+
+.fa {
+  height: 25px;
   padding: 4px;
   cursor: pointer;
   transform: translateX(-20px);

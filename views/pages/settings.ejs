@@ -4,54 +4,69 @@
 	<body>
 		<% include ../partials/header %>
 		
-		<main>
-			<form id="changeSettings" action="/settings" method="post">
-				<input type="email" name="email" autocomplete="email" value=<%= user.email %> required style="display:none"/>
-				<label>
-					First name:
-					<input type="text" name="firstName" autocomplete="name" value=<%= user.firstName%> required/>
-				</label></br>
-				<label>
-					Last name:
-					<input type="text" name="lastName" autocomplete="family-name" 
-						<% if (user.lastName) { %>
-							value=<%= user.lastName%>
-						<% } %> 
+		<main class="container">
+			<div class="formsContainer">
+				<form id="changeSettings" action="/settings" method="post">
+					<input type="email" name="email"
+						autocomplete="email" value=<%= user.email %> 
+						placeholder="Email" required style="display:none"/>
+					<label>
+						First name:
+						<input class="form-control" type="text" name="firstName"
+							autocomplete="name" value=<%= user.firstName%> 
+							placeholder="First name" required/>
+					</label></br>
+					<label>
+						Last name:
+						<input class="form-control" type="text" name="lastName"
+							autocomplete="family-name" placeholder="Last name"
+							<% if (user.lastName) { %>
+								value=<%= user.lastName%>
+							<% } %> 
+							/>
+					</label></br>
+					<label>
+						City:
+						<input class="form-control" type="text" name="city" placeholder="City"
+							<% if (user.city) { %>
+									value=<%= user.city%>
+							<% } %> 
 						/>
-				</label></br>
-				<label>
-					City:
-					<input type="text" name="city" 
-						<% if (user.city) { %>
-								value=<%= user.city%>
-						<% } %> 
-					/>
-				</label></br>
-				<label>
-					Country:
-					<input type="text" name="country" autocomplete="country" 
-						<% if (user.country) { %>
-								value=<%= user.country%>
-						<% } %> 
-					/>
-				</label></br>
-				<button type="submit">Update data</button>
-			</form>
+					</label></br>
+					<label>
+						Country:
+						<input class="form-control" type="text" name="country"
+							autocomplete="country" placeholder="Country"
+							<% if (user.country) { %>
+									value=<%= user.country%>
+							<% } %> 
+						/>
+					</label></br>
+					<button class="btn" type="submit">Update data</button>
+				</form>
+				
+				<form id="changePassword" action="/api/changePassword" method="post">
+					<input class="form-control" type="email" name="email" 
+						autocomplete="email" value=<%= user.email %> placeholder="Email" 
+						required style="display:none"/>
+					<label>
+						Current password:
+						<input class="form-control" type="password" name="password"
+							autocomplete="current-password" 
+							placeholder="Current password" required/>
+					</label></br>
+					<label>
+						New password:
+						<input class="form-control" type="password" name="newPassword"
+							autocomplete="new-password" placeholder="New password"
+							required/>
+					</label></br>
+					<button class="btn" type="submit">Change password</button>
+				</form>
+			</div>
 			
-			<form id="changePassword" action="/api/changePassword" method="post">
-				<input type="email" name="email" autocomplete="email" value=<%= user.email %> required style="display:none"/>
-				<label>
-					Current password:
-					<input type="password" name="password" autocomplete="current-password" required/>
-				</label></br>
-				<label>
-					New password:
-					<input type="password" name="newPassword" autocomplete="new-password" required/>
-				</label></br>
-				<button type="submit">Change password</button>
-			</form>
 			
-			<button id="deleteAccount" type="button">Delete account</button>
+			<button id="deleteAccount" class="btn" type="button">Delete account</button>
 			
 		</main>
 		

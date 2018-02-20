@@ -4,22 +4,27 @@
 	<body>
 		<% include ../partials/header %>
 		
-		<main>
-			<% if (message) { %>
-				<p><%= message %></p>
+		<main class="container">
+			<% if (message[0]) { %>
+				<div class="alert alert-primary"><%= message %></div>
 			<% } %>
 			<form id="login" action="/login" method="post">
 				<label>
 					Email:
-					<input type="email" name="email" autocomplete="email" required/>
+					<input class="form-control" type="email" name="email"
+						autocomplete="email" placeholder="Email" required/>
 				</label></br>
 				<label>
 					Password:
-					<input type="password" name="password" autocomplete="current-password" required/>
+					<input class="form-control" type="password" name="password"
+						autocomplete="current-password" placeholder="Password"
+						required/>
 				</label></br>
-				<button type="submit">Log in</button>
+				<button class="btn" type="submit">Log in</button>
 			</form>
-			
+			<button class="btn signupBtn">
+				<a href="/signup">Sign up</a>
+			</button>
 		</main>
 		
 		<% include ../partials/controllers %>

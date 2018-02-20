@@ -4,26 +4,29 @@
 	<body>
 		<% include ../partials/header %>
 		
-		<button type="button" class="toggleRequests yours">
-			Your trade requests (<span class="yours"></span>)
-		</button>
-		<button type="button" class="toggleRequests forYou">
-			Trade requests for you (<span class="forYou"></span>)
-		</button>
+		<main class="container">
+			<h1>My books:</h1>
+			<button type="button" class="btn toggleRequests yours">
+				Your trade requests (<span class="yours"></span>)
+			</button>
+			<button type="button" class="btn toggleRequests forYou">
+				Trade requests for you (<span class="forYou"></span>)
+			</button>
+			
+			
+			<form id="addBook" action="/api/addBook" method="POST">
+			    <input type="email" name="email" autocomplete="email" value=<%= user.email %> required style="display:none"/>
+			    <input type="text" name="bookName" required/>
+			    <button id="addBtn" class="btn btn-primary btn-sm" type="submit">Add</button>
+			</form>
+			
+			<% if (message[0]) { %>
+				<div class="alert alert-primary"><%= message %></div>
+			<% } %>
+			
+			<div class="books"></div>
+		</main>
 		
-		
-		<form id="addBook" action="/api/addBook" method="POST">
-		    <input type="email" name="email" autocomplete="email" value=<%= user.email %> required style="display:none"/>
-		    <input type="text" name="bookName" required/>
-		    <button type="submit">Add</button>
-		</form>
-		
-		<% if (message) { %>
-			<p><%= message %></p>
-		<% } %>
-		
-		<div class="books"></div>
-	
 		<% include ../partials/controllers %>
 	    <script type="text/javascript" src="common/actions.js"></script>
 	</body>

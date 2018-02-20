@@ -95,7 +95,7 @@ module.exports = (app, passport) => {
 		.get(isLoggedIn, tradesHandler.getTradesOfUser);
 		
 	app.route('/api/proposeTrade/:id/:email')
-		.put(isLoggedIn, tradesHandler.proposeTrade);
+		.post(isLoggedIn, tradesHandler.proposeTrade);
 	
 	app.route('/api/approveTrade/:id')
 		.put(isLoggedIn, (req, res) => tradesHandler.changeTradeState("approved", req, res));
@@ -103,9 +103,5 @@ module.exports = (app, passport) => {
 	app.route('/api/denyTrade/:id')
 		.put(isLoggedIn, (req, res) => tradesHandler.changeTradeState("unapproved", req, res));
 	
-	/*app.route('/api/:id')
-		.get((req, res) => {
-			req.user ? res.json(req.user) : res.sendStatus(401);
-		});*/
 
 };
