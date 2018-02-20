@@ -31,34 +31,92 @@ function DOMController() {
         const forYouSpan = document.querySelector("span.forYou");
         yoursSpan.innerHTML = trades.usersTradeRequests.length;
         forYouSpan.innerHTML = trades.tradeRequestsForUser.length;
-        if (trades.usersTradeRequests.length) {
-            const tradesBlock = document.createElement("div");
+        if (trades.usersTradeRequests.length) addTable(true);
+        if (trades.tradeRequestsForUser.length) addTable(false);
+        
+        function addTable (isUsersRequest) {
             const form = document.querySelector("form");
-            tradesBlock.id = "yours";
-            tradesBlock.classList.add("tradeRequests");
-            tradesBlock.style.display = "none";
-            trades.usersTradeRequests.forEach(trade => {
-                const p = document.createElement("p");
-                p.innerHTML = `${trade.owner_firstName} - ${trade.bookTitle} - ${trade.state}`;
-                tradesBlock.appendChild(p);
-            });
-            
-            document.body.insertBefore(tradesBlock, form);
+            const table = createTable(isUsersRequest);
+            const tableHead = createTableHead(isUsersRequest);
+            table.appendChild(tableHead);
+            if (isUsersRequest) {
+                trades.usersTradeRequests.forEach(trade => {
+                    const tableRow = createTableRow(isUsersRequest, trade);
+                    table.appendChild(tableRow);
+                });
+            }
+            else {
+                trades.tradeRequestsForUser.forEach(trade => {
+                    const tableRow = createTableRow(isUsersRequest, trade);
+                    table.appendChild(tableRow);
+                });
+            }
+            document.body.insertBefore(table, form);
         }
-        if (trades.tradeRequestsForUser.length) {
-            const tradesBlock = document.createElement("div");
-            const form = document.querySelector("form");
-            tradesBlock.id = "forYou";
-            tradesBlock.classList.add("tradeRequests");
-            tradesBlock.style.display = "none";
-            trades.tradeRequestsForUser.forEach(trade => {
-                const p = document.createElement("p");
-                p.innerHTML = `${trade.offerer_firstName} - ${trade.bookTitle} - ${trade.state}`;
-                tradesBlock.appendChild(p);
-            });
-            
-            document.body.insertBefore(tradesBlock, form);
+        
+        function createTable(isUsersRequest) {
+            const table = document.createElement("div");
+            table.id = isUsersRequest ? "yours" : "forYou";
+            table.classList.add("tradeRequests");
+            table.style.display = "none";
+            return table;
         }
+        
+        function createTableHead (isUsersRequest) {
+            const tableHead = document.createElement("thead");
+            const tableHeader1 = document.createElement("th");
+            const tableHeader2 = document.createElement("th");
+            const tableHeader3 = document.createElement("th");
+            tableHeader1.innerHTML = isUsersRequest ? "Owner" : "Offerer";
+            tableHeader2.innerHTML = "Title";
+            tableHeader3.innerHTML = "Answer";
+            tableHead.appendChild(tableHeader1);
+            tableHead.appendChild(tableHeader2);
+            tableHead.appendChild(tableHeader3);
+            return tableHead;
+        }
+        
+        function createTableRow (isUsersRequest, trade) {
+            const tableRow = document.createElement("tr");
+            const tableData1 = document.createElement("td");
+            const tableData2 = document.createElement("td");
+            const tableData3 = document.createElement("td");
+            
+            tableData1.innerHTML = isUsersRequest ? trade.owner_firstName
+                                                   : trade.offerer_firstName;
+            tableData2.innerHTML = trade.bookTitle;
+            if (!isUsersRequest && trade.state == "sended") {
+                const icon1 = createIcon(isUsersRequest, "approved");
+                const icon2 = createIcon(isUsersRequest, "unapproved");
+                icon1.style.cursor = "pointer";
+                icon2.style.cursor = "pointer";
+                icon1.onclick = () => tradesController.approveTrade(trade.goodreadsId);
+                icon2.onclick = () => tradesController.denyTrade(trade.goodreadsId);
+                tableData3.appendChild(icon1);
+                tableData3.appendChild(icon2);
+            }
+            else {
+                const icon = createIcon(isUsersRequest, trade.state);
+                tableData3.appendChild(icon);
+            }
+            
+            tableRow.appendChild(tableData1);
+            tableRow.appendChild(tableData2);
+            tableRow.appendChild(tableData3);
+            return tableRow;
+        }
+        
+        function createIcon (isUsersRequest, state) {
+            const icon = document.createElement("i");
+            icon.classList.add("fas");
+            let iconName;
+            if (state == "sended") iconName = "fa-spinner";
+            else if (state == "approved") iconName = "fa-check";
+            else iconName = "fa-times";
+            icon.classList.add(iconName);
+            return icon;
+        }
+        
     };
     
     this.toggleRequests = () => {

@@ -97,8 +97,11 @@ module.exports = (app, passport) => {
 	app.route('/api/proposeTrade/:id/:email')
 		.put(isLoggedIn, tradesHandler.proposeTrade);
 	
-	app.route('/api/respondToProposal/:id/:email/:respond')
-		.put(isLoggedIn, tradesHandler.changeStateOfProposal);
+	app.route('/api/approveTrade/:id')
+		.put(isLoggedIn, (req, res) => tradesHandler.changeTradeState("approved", req, res));
+		
+	app.route('/api/denyTrade/:id')
+		.put(isLoggedIn, (req, res) => tradesHandler.changeTradeState("unapproved", req, res));
 	
 	/*app.route('/api/:id')
 		.get((req, res) => {

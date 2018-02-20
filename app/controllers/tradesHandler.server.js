@@ -74,18 +74,18 @@ function TradesHandler() {
         });
     };
     
-    this.changeStateOfProposal = (req, res) => {
+    this.changeTradeState = (newState, req, res) => {
         const goodreadsId = req.params.id;
         const owner_email = req.user.email;
-        const respond = req.params.respond;
         Trades.findOne({goodreadsId, owner_email})
-                .tnen(trade => {
-                    trade.state = respond;
+                .then(trade => {
+                    trade.state = newState;
                     trade.save()
                             .then(() => res.sendStatus(200))
                             .catch(err => res.status(500).send(err));
                 }).catch(err => res.status(500).send(err));
     };
+    
     
 }
 

@@ -24,6 +24,20 @@ function TradesController() {
             if (status == 200) location.reload();
         }));
     };
+    
+    this.approveTrade = booksId => {
+        const apiUrl = `/api/approveTrade/${booksId}`;
+        ajaxFunctions.ready(ajaxFunctions.ajaxRequest("PUT", apiUrl, (status, data) => {
+            if (status == 200) location.reload();
+        }));
+    };
+    
+    this.denyTrade = booksId => {
+        const apiUrl = `/api/denyTrade/${booksId}`;
+        ajaxFunctions.ready(ajaxFunctions.ajaxRequest("PUT", apiUrl, (status, data) => {
+            if (status == 200) location.reload();
+        }));
+    }
 }
 
 const tradesController = new TradesController();
