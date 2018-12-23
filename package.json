@@ -10,6 +10,10 @@
   "keywords": [
     "books"
   ],
+  "engines": {
+    "node": "8.9.3",
+    "npm": "6.0.1"
+  },
   "scripts": {
     "start": "node server.js"
   },
